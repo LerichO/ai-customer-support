@@ -3,12 +3,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #eddfe2;
 }
 
 .card {
-  background-color: green;
-  min-width: 400px;
+  max-width: 400px;
   border-radius: 2rem;
+  border: 1px solid grey;
+  background-color: white;
 }
 
 .header {
@@ -23,23 +25,53 @@
 
 .img_container {
   border: 1px solid var(--white);
-  width: 3rem;
+  width: 3.5rem;
   border-radius: 100%;
 }
 
 .title {
-  font-size: 1rem;
+  font-size: 1.5rem;
   color: var(--white);
 }
 
 .body {
-  min-height: 500px;
+  height: 500px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 2rem;
+  overflow-y: scroll;
 }
 
 .input {
-  background-color: blue;
+  border-radius: 0 0 2rem 2rem;
+  font-size: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  border-top: 1px solid black;
+  background-color: "red";
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  height: 100%;
+}
+
+.inputField {
+  width: 80%;
+  height: 100%;
+  padding: 1rem;
+  border-radius: 0 0 0 2rem;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--secondary);
+}
+
+input.inputField:focus {
+  outline-width: 0;
 }
