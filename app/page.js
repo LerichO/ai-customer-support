@@ -1,8 +1,43 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./page.module.css";
 import Message from "./components/Message";
+import { useState } from "react";
+import { BsFillSendFill } from "react-icons/bs";
 
 export default function Home() {
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content:
+        "Hi! I'm the Headstarter support assistant. How can I help you today?",
+    },
+    {
+      role: "user",
+      content: "Does Lerich Osay know Sidney Osay?",
+    },
+    {
+      role: "user",
+      content: "She went to NGHS",
+    },
+  ]);
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+    console.log(message);
+  };
+
+  const sendMessage = () => {
+    console.log("THIS IS THE MESSAGE: " + message);
+    const newMessage = {
+      role: "user",
+      content: message,
+    };
+    setMessages([...messages, newMessage]);
+  };
+
   return (
     <main className={styles.main}>
       <div className={styles.card}>
@@ -21,12 +56,25 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.body}>
-          <Message content="Hello" />
-          <Message content="Hello" />
-          <Message content="Hello" />
-          <Message content="Hello" />
+          {messages.map((message, i) => {
+            return (
+              <Message content={message.content} role={message.role} key={i} />
+            );
+          })}
         </div>
-        <div className={styles.input}>asdsad</div>
+        <div className={styles.input}>
+          <input
+            value={message}
+            onChange={handleChange}
+            className={styles.inputField}
+          />
+          <div className={styles.btn} onClick={sendMessage}>
+            <BsFillSendFill
+              className={styles.btnIcon}
+              style={{ color: "#c14545" }}
+            />
+          </div>
+        </div>
       </div>
     </main>
   );

@@ -1,6 +1,6 @@
 .body {
-  background-color: #c4c4c4;
-  max-width: 50%;
+  margin: 0;
   border-radius: 0.25rem;
-  padding: 0.1rem 0rem;
+  padding: 0.1rem 0.5rem;
+  max-width: 60%;
 }
