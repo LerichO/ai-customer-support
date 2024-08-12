@@ -40,10 +40,10 @@ jobs:
 
       - name: SSH into Prod EC2 and deploy
         env:
-          PROD_EC2_DNS: ${{ secrets.EC2_HOSTNAME }}
+          EC2_DNS: ${{ secrets.EC2_HOSTNAME }}
         run: |
           echo "SSHing into EC2..."
-          ssh -tt -o StrictHostKeyChecking=no soulstice-server@${PROD_EC2_DNS} <<-EOF
+          ssh -tt -o StrictHostKeyChecking=no ubuntu@${EC2_DNS} <<-EOF
             cd /home/ubuntu/ai-customer-support
             git pull origin main
             npm install
