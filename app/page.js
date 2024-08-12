@@ -15,11 +15,11 @@ export default function Home() {
     },
     {
       role: "user",
-      content: "Does Lerich Osay know Sidney Osay?",
+      content: "Test?",
     },
     {
       role: "user",
-      content: "She went to NGHS",
+      content: "Test",
     },
   ]);
   const [message, setMessage] = useState("");

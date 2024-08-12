@@ -9,12 +9,23 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build application
+      run: npm run build
 
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.7.0
@@ -27,16 +38,20 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan github.com >> ~/.ssh/known_hosts
 
+    - name: Transfer built files to EC2
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOSTNAME }}
+      run: |
+        scp -r .next package.json package-lock.json ubuntu@${EC2_HOST}:~/ai-customer-support/
+
     - name: SSH into Prod EC2 and deploy
       env:
         EC2_HOST: ${{ secrets.EC2_HOSTNAME }}
       run: |
-        echo "SSHing into EC2..."
-        ssh -tt -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} <<-EOF
+        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << EOF
           cd ai-customer-support
           git pull origin main
-          npm install
-          npm run build
+          npm ci --only=production
           pm2 restart all
           exit
         EOF
