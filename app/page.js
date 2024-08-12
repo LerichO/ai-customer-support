@@ -15,11 +15,7 @@ export default function Home() {
     },
     {
       role: "user",
-      content: "Test?",
-    },
-    {
-      role: "user",
-      content: "Test",
+      content: "Hello World",
     },
   ]);
   const [message, setMessage] = useState("");
