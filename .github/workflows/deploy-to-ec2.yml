@@ -42,9 +42,12 @@ jobs:
         env:
           PROD_EC2_DNS: ${{ secrets.EC2_HOSTNAME }}
         run: |
-            cd ai-customer-support
+          echo "SSHing into EC2..."
+          ssh -tt -o StrictHostKeyChecking=no soulstice-server@${PROD_EC2_DNS} <<-EOF
+            cd /home/ubuntu/ai-customer-support
             git pull origin main
             npm install
             npm run build
             pm2 restart all 
             exit
+          EOF
