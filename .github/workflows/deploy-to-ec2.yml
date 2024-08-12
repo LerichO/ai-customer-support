@@ -1,0 +1,41 @@
+name: Deploy AI Customer Support to EC2 instance
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+    - name: Add deploy key
+      run: |
+        echo "${{ secrets.EC2_PRIVATE_DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    - name: SSH into Prod EC2 and deploy
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOSTNAME }}
+      run: |
+        echo "SSHing into EC2..."
+        ssh -tt -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} <<-EOF
+          cd /ai-customer-support
+          git pull origin main
+          npm install
+          npm run build
+          pm2 restart all 
+        EOF
