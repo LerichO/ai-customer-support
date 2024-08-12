@@ -13,45 +13,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build application
-      run: npm run build
+      - name: Build Next.js app
+        run: npm run build
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-
-    - name: Add deploy key
-      run: |
-        echo "${{ secrets.EC2_PRIVATE_DEPLOY_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-    - name: Transfer built files to EC2
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOSTNAME }}
-      run: |
-        scp -r .next package.json package-lock.json ubuntu@${EC2_HOST}:~/ai-customer-support/
-
-    - name: SSH into Prod EC2 and deploy
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOSTNAME }}
-      run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << EOF
-          cd ai-customer-support
-          git pull origin main
-          npm ci --only=production
-          pm2 restart all
-          exit
-        EOF
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{ secrets.EC2_HOSTNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd ai-customer-support
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all 
+            exit
