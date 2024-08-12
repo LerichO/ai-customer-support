@@ -27,12 +27,21 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.2
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
         with:
-          host: ${{ secrets.EC2_HOSTNAME }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
+          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+      - name: Add deploy key
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: SSH into Prod EC2 and deploy
+        env:
+          PROD_EC2_DNS: ${{ secrets.EC2_HOSTNAME }}
+        run: |
             cd ai-customer-support
             git pull origin main
             npm install
