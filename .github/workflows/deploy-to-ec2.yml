@@ -33,9 +33,10 @@ jobs:
       run: |
         echo "SSHing into EC2..."
         ssh -tt -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} <<-EOF
-          cd /ai-customer-support
+          cd ai-customer-support
           git pull origin main
           npm install
           npm run build
-          pm2 restart all 
+          pm2 restart all
+          exit
         EOF
