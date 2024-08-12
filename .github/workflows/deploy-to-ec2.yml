@@ -16,17 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Next.js app
-        run: npm run build
-
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
@@ -47,7 +36,6 @@ jobs:
             cd /home/ubuntu/ai-customer-support
             git pull origin main
             npm install
-            npm run build
             pm2 restart all 
             exit
           EOF
